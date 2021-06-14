@@ -92,4 +92,4 @@ for params in param_product:
 
     results = (train_acc, test_acc, estimator_1, estimator_2, estimator_3, bound)
     fname = 'logs/pac-bayes/' + str(params) + '.pickle'
-    pickle.dump( results, open( fname, "wb" ) )
+    #pickle.dump( results, open( fname, "wb" ) )
