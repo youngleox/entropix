@@ -58,16 +58,20 @@ def get_data(num_train_examples, num_test_examples, batch_size, random_labels, b
             random_test_subset.append( ( data[0], torch.randint(low=0,high=2,size=(1,)).item() ) )
         test_subset = random_test_subset
 
-    full_batch_train_loader = torch.utils.data.DataLoader(train_subset, batch_size=len(train_subset), shuffle=False)
-    full_batch_test_loader = torch.utils.data.DataLoader(test_subset, batch_size=len(test_subset), shuffle=False)
-    train_loader = torch.utils.data.DataLoader(train_subset,  batch_size=batch_size, shuffle=True)
-    test_loader  = torch.utils.data.DataLoader(test_subset, batch_size=batch_size, shuffle=False)
+    full_batch_train_loader = torch.utils.data.DataLoader(train_subset, batch_size=len(train_subset), shuffle=False,num_workers=4)
+    full_batch_test_loader = torch.utils.data.DataLoader(test_subset, batch_size=len(test_subset), shuffle=False,num_workers=4)
+    train_loader = torch.utils.data.DataLoader(train_subset,  batch_size=batch_size, shuffle=True,num_workers=4)
+    test_loader  = torch.utils.data.DataLoader(test_subset, batch_size=batch_size, shuffle=False,num_workers=4)
 
     return full_batch_train_loader, full_batch_test_loader, train_loader, test_loader
 
-def normalize_data(data, target):
+def normalize_data(data, target, multi_class=False):
     data = data.view(data.shape[0],-1)
     data /= data.norm(dim=1).unsqueeze(dim=1)
     data *= math.sqrt(data.shape[1])
-    target = target%2*2-1
+    if not multi_class:
+        target = target%2*2-1
+    else:
+        y = torch.eye(10)*2 - torch.ones((10,10))
+        target = y[target]
     return data, target

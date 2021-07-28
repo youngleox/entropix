@@ -18,8 +18,9 @@ def complexity(sigma, c, samples):
     id = torch.eye(n, device=device)
 
     assert ( sigma == sigma.t() ).all()
-    u = torch.cholesky(sigma)
+    u = torch.linalg.cholesky(sigma)
     inv = torch.cholesky_inverse(u)
+    print("diff: ",(torch.mm(sigma, inv) - id).abs().max())
     assert (torch.mm(sigma, inv) - id).abs().max() < 1e-03
 
     nth_root_det = u.diag().pow(2/n).prod()
